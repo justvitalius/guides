@@ -12,6 +12,7 @@
   1. [Функции](#functions)
   1. [Свойства](#properties)
   1. [Переменные](#variables)
+  1. [IIFE](#iife)
   1. [Области видимости](#hoisting)
   1. [Условные выражения и равенства](#conditionals)
   1. [Блоки кода](#blocks)
@@ -263,34 +264,35 @@
       return true;
     };
 
-    // объявление именованной функции
-    var named = function named() {
+    function namedtwo(){
       return true;
-    };
+    }
 
     // объявление функции, которая сразу же выполняется (замыкание)
     (function() {
       console.log('Если вы читаете это, вы открыли консоль.');
     })();
     ```
+  - Старайтесь всегда использовать именованные функции. У них есть ряд преимуществ над анонимными или присваиваемыми. Например: их можно объявлять после места вызова
+
   - Никогда не объявляйте функцию внутри блока кода — например в if, while, else и так далее. Единственное исключение — блок функции. Вместо этого присваивайте функцию уже объявленной через `var` переменной. Условное объявление функций работает, но в различных браузерах работает по-разному.
-  - **Примечание** ECMA-262 устанавливает понятие `блока` как списка операторов. Объявление функции (не путайте с присвоением функции переменной) не является оператором. [Комментарий по этому вопросу в ECMA-262](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97).
 
-    ```javascript
-    // плохо
-    if (currentUser) {
-      function test() {
-        console.log('Плохой мальчик.');
+  ```javascript
+      // плохо
+      if (currentUser) {
+        return test();
+        function test() {
+          console.log('Плохой мальчик.');
+        }
       }
-    }
 
-    // хорошо
-    var test;
-    if (currentUser) {
-      test = function test() {
-        console.log('Молодец.');
-      };
-    }
+      // хорошо
+      if (currentUser) {
+        return test();
+      }
+      function test() {
+        console.log('Хороший мальчик.');
+      }
     ```
 
   - Никогда не используйте аргумент функции `arguments`, он будет более приоритетным над объектом `arguments`, который доступен без объявления для каждой функции.
@@ -305,6 +307,62 @@
     function yup(name, options, args) {
       // ...код...
     }
+    ```
+
+  - Используйте `arguments` в крайнем случае. Например: неизвестное количество цифр, которые нужно превратить в строку. 
+
+    ```javascript
+    // плохо
+    function sum6digit(a, b, c, d, e, f) {
+      return a + b + c + d + e + f;
+    }
+
+    // хорошо
+    function sum() {
+      var sum = 0;
+      for (var i = 0; i < arguments.length - 1; i++){
+        sum += arguments[i];
+      }
+      return sum;
+    }
+    ```
+
+  - Используйте `передачу параметров в объекте` если количество аргументов функции велико и их характер не одинаков. 
+
+    ```javascript
+    // плохо
+    function filterDigits5Vars(one, two, three, isFour, filterCb) {
+      return one * filterCb(two, three) || isFour;
+    }
+
+    filterDigitsObject(1, 2, 3, true, filter);
+
+
+    // или
+    function filterDigitsArguments(arguments) {
+      var one = arguments[0],
+          two = arguments[1],
+          three = arguments[2],
+          isFour = arguments[3],
+          filter = arguments[4];
+
+      return one * filter(two, three) || isFour;
+    }
+
+    filterDigitsObject(1, 2, 3, true, filter);
+
+    // хорошо
+    function filterDigitsObject(options) {
+      var one = options.one,
+          two = options.two,
+          three = options.three,
+          isFour = options.isFour,
+          filter = options.filter;
+
+      return one * filter(two, three) || isFour;
+    }
+
+    filterDigitsObject({one: 1, two: 2, three: 3, isFour: true, filter});
     ```
 
     **[[⬆]](#Оглавление)**
@@ -451,6 +509,36 @@
       return true;
     }
     ```
+
+    **[[⬆]](#Оглавление)**
+
+
+## <a name='iife'>IIFE</a>
+
+  - Всегда оборачивайте компоненты в Немедленно Исполняемые Функции(IIFE - Immediately Invoked Function Expression). 
+
+  - Замечание: этот подход заставит вас отказаться от глобальных переменных в пользу управляемого контекста.
+
+  ```javascript
+  // плохо
+  var employees = [];
+  function getEmployees(){
+      superagent.get('localhost:3000/employess');
+  }
+
+  // хорошо
+  (function(){
+    var employees = [];
+    function getEmployees(){
+        superagent.get('localhost:3000/employess');
+    }
+  })(); 
+  
+  ```
+
+  - Замечание: Только для краткости, в остальных примерах мы не будем прописывать синтаксис с функциями IIFE. 
+
+  - Замечание: IIFE не дает тестировать приватный код, так как предотвращает доступ к нему, например, регулярные выражения или вспомогательные функции, которые нужно оттестировать в модульных тестах (unit test) напрямую. Как выход, вы можете тестировать через специальные методы, используемые только в тестах (accessible members) или выставить нужные внутренние функции в собственном компоненте. Например, поместите вспомогательные функции, регулярные выражения или константы в отдельно подключаемый объект helper.
 
     **[[⬆]](#Оглавление)**
 
@@ -898,6 +986,17 @@
       var name = 'Skywalker';
       return name;
     })();
+
+    // хорошо
+    function(){
+      return true;
+    }
+
+    // хорошо
+    var isBool = function isBool(){
+      return true;
+    };
+
     ```
 
     **[[⬆]](#Оглавление)**

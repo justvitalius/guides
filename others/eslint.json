@@ -1,0 +1,31 @@
+{
+  "ecmaFeatures": {
+    "blockBindings": true,
+    "forOf": true,
+    "jsx": true
+  },
+  "rules": {
+    "semi": 2,
+    "no-underscore-dangle": true,
+    "eol-last": false,
+    "no-multi-spaces": false,
+    "no-trailing-spaces": false,
+    "no-alert": true,
+    "quotes": [2, "single", "avoid-escape"],
+    "func-style": [2, "declaration"],
+    "no-use-before-define": true
+  },
+
+  "globals": {
+    "require": true,
+    "window": true,
+    "module": true,
+    "angular": true,
+    "setTimeout": true,
+    "document": true,
+    "confirm": true
+  },
+  "envs": [
+    "browser"
+  ]
+}
