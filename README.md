@@ -9,8 +9,11 @@
 
 ## <a name='TOC'>Оглавление</a>
 
+  1. [Архитектура веб-приложений](#base)
   1. [Набор материалов про angular](#angular)
 
+## <a name='base'>Архитектура веб-приложений</a>
+1. [Видео с Pete Hunt о методологии разработки веб версии Instagram](http://www.youtube.com/watch?v=VkTCL6Nqm6Y&feature=youtu.be)
 
 ## <a name='angular'>Набор материалов про angular</a>
 
